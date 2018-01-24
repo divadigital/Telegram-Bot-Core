@@ -1,0 +1,33 @@
+{
+	"name": "keythkatz/telegram-bot-core",
+	"description": "Telegram Bot Framework",
+	"type": "package",
+	"keywords": ["telegram"],
+	"homepage": "https://github.com/keythkatz/telegram-bot-core",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Jeremy Lim",
+			"email": "me@jerl.im",
+			"homepage": "https://jerl.im",
+			"role": "Developer"
+		}
+	],
+	"require": {
+		"php": "^7.2",
+		"telegram-bot/api": "^2.3",
+		"guzzlehttp/guzzle": "^6"
+	},
+	"require-dev": {
+		"phpunit/phpunit": "^6.5"
+	},
+	"autoload": {
+		"psr-4": {
+			"KeythKatz\\TelegramBotCore\\": "src/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+		}
+	}
+}
