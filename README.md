@@ -104,14 +104,14 @@ $message->send();
 
 ### The `Command` class
 
-The `Command` class has a few helper functions:
+The `Command` class has a few helper functions, also linked to the Telegram API methods:
 ```php
 // Create a new SendMessage linked to the bot.
-$this->createMessage();
+$this->sendMessage();
 
 // Create a new SendMessage with the chatId prefilled.
 // Set $quoteOriginal to true to reply directly to the triggering message.
-$this->createMessageReply($quoteOriginal = false);
+$this->sendMessageReply($quoteOriginal = false);
 
 // Forward the triggering message to another chat.
 // Set $disableNofication to true to send the message silently.

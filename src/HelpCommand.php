@@ -17,7 +17,7 @@ class HelpCommand extends Command
 
 	public function process($arguments, $message)
 	{
-		$reply = $this->createMessageReply();
+		$reply = $this->sendMessageReply();
 
 		$text = "Commands available for this bot:\r\n";
 		foreach ($this->commands as $command) {

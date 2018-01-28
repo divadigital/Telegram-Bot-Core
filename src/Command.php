@@ -59,21 +59,21 @@ abstract class Command
 
 	/**
 	 * Create a new blank message.
-	 * @return Sendable\SendableMessage blank message.
+	 * @return SendMessage blank message.
 	 */
-	public function createMessage(): SendMessage
+	public function sendMessage(): SendMessage
 	{
-		return $this->bot->createMessage();
+		return $this->bot->sendMessage();
 	}
 
 	/**
 	 * Create a new blank message sending back to the chat
 	 * @param  boolean $quoteOriginal If the original message should be quoted when replying. False by default.
-	 * @return Sendable\SendableMessage new message.
+	 * @return SendMessage new message.
 	 */
-	public function createMessageReply(bool $quoteOriginal = false): SendMessage
+	public function sendMessageReply(bool $quoteOriginal = false): SendMessage
 	{
-		$m = $this->bot->createMessage();
+		$m = $this->bot->sendMessage();
 		$m->setChatId($this->message->getChat()->getId());
 
 		if ($quoteOriginal) {
@@ -90,7 +90,7 @@ abstract class Command
 	 */
 	public function forwardMessage($toChatId, bool $disableNotification = false): void
 	{
-		$m = $this->bot->createMessageForward();
+		$m = $this->bot->forwardMessage();
 		$m->setChatId($toChatId);
 		$m->setFromChatId($this->message->getChat()->getId());
 		$m->setMessageId($this->message->getMessageId());

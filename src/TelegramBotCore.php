@@ -58,19 +58,19 @@ abstract class TelegramBotCore
 	}
 
 	/**
-	 * Create a new SendableMessage.
-	 * @return SendableMessage new blank SendableMessage.
+	 * Create a new SendMessage.
+	 * @return SendMessage new blank SendMessage.
 	 */
-	public function createMessage(): SendMessage
+	public function sendMessage(): SendMessage
 	{
 		return new SendMessage(static::$token, $this);
 	}
 
 	/**
-	 * Create a new ForwardableMessage.
-	 * @return ForwardableMessage new blank ForwardableMessage.
+	 * Create a new ForwardMessage.
+	 * @return ForwardMessage new blank ForwardMessage.
 	 */
-	public function createMessageForward(): ForwardMessage
+	public function forwardMessage(): ForwardMessage
 	{
 		return new ForwardMessage(static::$token, $this);
 	}
