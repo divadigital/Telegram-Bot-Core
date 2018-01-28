@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace KeythKatz\TelegramBotCore;
 
 use GuzzleHttp\Promise\Promise;
+use GuzzleHttp\Exception\ClientException;
 use TelegramBot\Api\Types\Update;
 use TelegramBot\Api\BotApi;
 use KeythKatz\TelegramBotCore\Method\{
@@ -145,7 +146,11 @@ abstract class TelegramBotCore
 	private function finishPromises(): void
 	{
 		foreach ($this->promises as $promise) {
-			$promise->wait();
+			try {
+				$promise->wait();
+			} catch (ClientException $e) {
+				echo "<pre>" . $e->getMessage() . "\r\n</pre>";
+			}
 		}
 	}
 
@@ -168,7 +173,7 @@ abstract class TelegramBotCore
 
 		// Extract arguments
 		if ($firstSpace !== false) {
-			$arguments = substr($rawMessage, $firstSpace);
+			$arguments = substr($rawMessage, $firstSpace + 1);
 		} else {
 			$arguments = null;
 		}
