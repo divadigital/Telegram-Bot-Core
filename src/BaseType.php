@@ -34,7 +34,7 @@ abstract class BaseType
 		return $mappedParams;
 	}
 
-	private static function toCamelCase(string $str): string
+	protected static function toCamelCase(string $str): string
 	{
 		return lcfirst(str_replace(" ", "", ucwords(str_replace("_", " ", $str))));
 	}

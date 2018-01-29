@@ -9,7 +9,9 @@ use TelegramBot\Api\Types\Update;
 use TelegramBot\Api\BotApi;
 use KeythKatz\TelegramBotCore\Method\{
 	SendMessage,
-	ForwardMessage
+	ForwardMessage,
+	SendPhoto,
+	SendDocument
 };
 
 abstract class TelegramBotCore
@@ -74,6 +76,24 @@ abstract class TelegramBotCore
 	public function forwardMessage(): ForwardMessage
 	{
 		return new ForwardMessage(static::$token, $this);
+	}
+
+	/**
+	 * Create a new SendPhoto.
+	 * @return SendPhoto new blank SendPhoto.
+	 */
+	public function sendPhoto(): SendPhoto
+	{
+		return new SendPhoto(static::$token, $this);
+	}
+
+	/**
+	 * Create a new SendDocument.
+	 * @return SendDocument new blank SendDocument.
+	 */
+	public function sendDocument(): SendDocument
+	{
+		return new SendDocument(static::$token, $this);
 	}
 
 	/**

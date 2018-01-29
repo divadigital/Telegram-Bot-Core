@@ -16,6 +16,8 @@ abstract class Method extends BaseType
 	 */
 	protected static $method;
 
+	protected $multipart = [];
+
 	private $bot;
 
 	public function __construct(string $token, \KeythKatz\TelegramBotCore\TelegramBotCore $bot)
@@ -33,11 +35,23 @@ abstract class Method extends BaseType
 
 		$curler = new \GuzzleHttp\Client(['base_uri' => $this->tgUrl]);
 
-		$promise = $curler->requestAsync("GET", static::$method, [
-			"query" => $mappedParams
-		]);
+		if (empty($this->multipart)) {
+			$promise = $curler->requestAsync("POST", static::$method, [
+				"query" => $mappedParams
+			]);
+		} else {
+			$promise = $curler->requestAsync("POST", static::$method, [
+				"query" => $mappedParams,
+				"multipart" => $this->multipart
+			]);
+		}
 
 		$this->bot->addPromise($promise);
+	}
+
+	protected function addMultipart(string $name, $resource)
+	{
+		array_push($this->multipart, ["name" => $name, "contents" => $resource]);
 	}
 
 	

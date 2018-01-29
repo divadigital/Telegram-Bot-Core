@@ -104,18 +104,20 @@ $message->send();
 
 ### The `Command` class
 
-The `Command` class has a few helper functions, also linked to the Telegram API methods:
+The `Command` class has helper functions, also linked to the Telegram API methods:
 ```php
 // Create a new SendMessage linked to the bot.
 $this->sendMessage();
 
-// Create a new SendMessage with the chatId prefilled.
+// Add Reply to any method name to create it with the chatId prefilled.
 // Set $quoteOriginal to true to reply directly to the triggering message.
 $this->sendMessageReply($quoteOriginal = false);
 
 // Forward the triggering message to another chat.
 // Set $disableNofication to true to send the message silently.
 $this->forwardMessage($toChatId, $disableNotification = false);
+
+...
 ```
 
 From anywhere in the class, you can also interact directly with the bot or the triggering message using:
@@ -153,14 +155,19 @@ $keyboard->addRow();
 $keyboard->addButton($button, 0);
 ```
 
+### InputFile
+Anywhere where `InputFile` is specified in the Telegram API, you may just send
+a resource, e.g. `fopen($file, 'r')`. Alternatively, you may encapsulate it in a
+`InputFile` class, e.g. `new InputFile(fopen($file, 'r'))`.
+
 ## Checklist
 
 ### Methods
 - [x] sendMessage
 - [x] forwardMessage
-- [ ] sendPhoto
+- [x] sendPhoto
 - [ ] sendAudio
-- [ ] sendDocument
+- [x] sendDocument
 - [ ] sendVideo
 - [ ] sendVoice
 - [ ] sendVideoNote
@@ -180,6 +187,6 @@ $keyboard->addButton($button, 0);
 - [ ] InputMedia
 - [ ] InputMediaPhoto
 - [ ] InputMediaVideo
-- [ ] InputFile
+- [X] InputFile
 
 Types that are receive-only (from an Update object) are handled by `telegram-bot/api` and are not tracked.

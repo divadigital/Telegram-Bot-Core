@@ -3,7 +3,11 @@ declare(strict_types=1);
 
 namespace KeythKatz\TelegramBotCore;
 
-use KeythKatz\TelegramBotCore\Method\SendMessage;
+use KeythKatz\TelegramBotCore\Method\{
+	SendMessage,
+	SendPhoto,
+	SendDocument
+};
 
 abstract class Command
 {
@@ -97,6 +101,58 @@ abstract class Command
 		$m->setDisableNotification($disableNotification);
 
 		$m->send();
+	}
+
+	/**
+	 * Send a photo.
+	 * @return SendPhoto new SendPhoto.
+	 */
+	public function sendPhoto(): SendPhoto
+	{
+		return $this->bot->sendPhoto();
+	}
+
+	/**
+	 * Send a photo back to the chat.
+	 * @param  bool|boolean $quoteOriginal If the original message should be quoted when replying. False by default.
+	 * @return SendPhoto                   New SendPhoto.
+	 */
+	public function sendPhotoReply(bool $quoteOriginal = false): SendPhoto
+	{
+		$m = $this->bot->sendPhoto();
+		$m->setChatId($this->message->getChat()->getId());
+
+		if ($quoteOriginal) {
+			$m->setReplyToMessageId($this->message->getMessageId());
+		}
+
+		return $m;
+	}
+
+	/**
+	 * Send a photo.
+	 * @return SendPhoto new SendPhoto.
+	 */
+	public function sendDocument(): SendDocument
+	{
+		return $this->bot->sendDocument();
+	}
+
+	/**
+	 * Send a photo back to the chat.
+	 * @param  bool|boolean $quoteOriginal If the original message should be quoted when replying. False by default.
+	 * @return SendPhoto                   New SendPhoto.
+	 */
+	public function sendDocumentReply(bool $quoteOriginal = false): SendDocument
+	{
+		$m = $this->bot->sendDocument();
+		$m->setChatId($this->message->getChat()->getId());
+
+		if ($quoteOriginal) {
+			$m->setReplyToMessageId($this->message->getMessageId());
+		}
+
+		return $m;
 	}
 
 	public function getName(): string
