@@ -5,8 +5,11 @@ namespace KeythKatz\TelegramBotCore;
 
 use KeythKatz\TelegramBotCore\Method\{
 	SendMessage,
+	SendAudio,
 	SendPhoto,
-	SendDocument
+	SendDocument,
+	SendVideo,
+	SendVoice
 };
 
 abstract class Command
@@ -78,12 +81,7 @@ abstract class Command
 	public function sendMessageReply(bool $quoteOriginal = false): SendMessage
 	{
 		$m = $this->bot->sendMessage();
-		$m->setChatId($this->message->getChat()->getId());
-
-		if ($quoteOriginal) {
-			$m->setReplyToMessageId($this->message->getMessageId());
-		}
-
+		$this->setReplyMarkup($m, $quoteOriginal);
 		return $m;
 	}
 
@@ -120,18 +118,34 @@ abstract class Command
 	public function sendPhotoReply(bool $quoteOriginal = false): SendPhoto
 	{
 		$m = $this->bot->sendPhoto();
-		$m->setChatId($this->message->getChat()->getId());
-
-		if ($quoteOriginal) {
-			$m->setReplyToMessageId($this->message->getMessageId());
-		}
-
+		$this->setReplyMarkup($m, $quoteOriginal);
 		return $m;
 	}
 
 	/**
-	 * Send a photo.
-	 * @return SendPhoto new SendPhoto.
+	 * Send a audio file.
+	 * @return SendAudio new SendAudio.
+	 */
+	public function sendAudio(): SendAudio
+	{
+		return $this->bot->sendAudio();
+	}
+
+	/**
+	 * Send a audio file back to the chat.
+	 * @param  bool|boolean $quoteOriginal If the original message should be quoted when replying. False by default.
+	 * @return SendAudio                   New SendAudio.
+	 */
+	public function sendAudioReply(bool $quoteOriginal = false): SendAudio
+	{
+		$m = $this->bot->sendAudio();
+		$this->setReplyMarkup($m, $quoteOriginal);
+		return $m;
+	}
+
+	/**
+	 * Send a document.
+	 * @return SendDocument new SendDocument.
 	 */
 	public function sendDocument(): SendDocument
 	{
@@ -139,19 +153,56 @@ abstract class Command
 	}
 
 	/**
-	 * Send a photo back to the chat.
+	 * Send a document back to the chat.
 	 * @param  bool|boolean $quoteOriginal If the original message should be quoted when replying. False by default.
-	 * @return SendPhoto                   New SendPhoto.
+	 * @return SendDocument                New SendDocument.
 	 */
 	public function sendDocumentReply(bool $quoteOriginal = false): SendDocument
 	{
 		$m = $this->bot->sendDocument();
-		$m->setChatId($this->message->getChat()->getId());
+		$this->setReplyMarkup($m, $quoteOriginal);
+		return $m;
+	}
 
-		if ($quoteOriginal) {
-			$m->setReplyToMessageId($this->message->getMessageId());
-		}
+	/**
+	 * Send a video.
+	 * @return SendVideo new SendVideo.
+	 */
+	public function sendVideo(): SendVideo
+	{
+		return $this->bot->sendVideo();
+	}
 
+	/**
+	 * Send a video back to the chat.
+	 * @param  bool|boolean $quoteOriginal If the original message should be quoted when replying. False by default.
+	 * @return SendVideo                New SendVideo.
+	 */
+	public function sendVideoReply(bool $quoteOriginal = false): SendVideo
+	{
+		$m = $this->bot->sendVideo();
+		$this->setReplyMarkup($m, $quoteOriginal);
+		return $m;
+	}
+
+	/**
+	 * Send a voice message.
+	 * @return SendVoice new SendVoice.
+	 */
+	public function sendVoice(): SendVoice
+	{
+		return $this->bot->sendVoice();
+	}
+
+	/**
+	 * Send a voice message back to the chat.
+	 * @param  bool|boolean $quoteOriginal If the original message should be quoted when replying. False by default.
+	 * @return SendVoice                New SendVoice.
+	 */
+	public function sendVoiceReply(bool $quoteOriginal = false): SendVoice
+	{
+		$m = $this->bot->sendVoice();
+		$this->setReplyMarkup($m, $quoteOriginal);
 		return $m;
 	}
 
@@ -163,5 +214,14 @@ abstract class Command
 	public function getHelpText(): string
 	{
 		return $this->helpText;
+	}
+
+	private function setReplyMarkup($m, bool $quoteOriginal): void
+	{
+		$m->setChatId($this->message->getChat()->getId());
+
+		if ($quoteOriginal) {
+			$m->setReplyToMessageId($this->message->getMessageId());
+		}
 	}
 }

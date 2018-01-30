@@ -166,10 +166,10 @@ a resource, e.g. `fopen($file, 'r')`. Alternatively, you may encapsulate it in a
 - [x] sendMessage
 - [x] forwardMessage
 - [x] sendPhoto
-- [ ] sendAudio
+- [x] sendAudio
 - [x] sendDocument
-- [ ] sendVideo
-- [ ] sendVoice
+- [x] sendVideo
+- [x] sendVoice
 - [ ] sendVideoNote
 - [ ] sendMediaGroup
 - [ ] sendLocation

@@ -11,7 +11,10 @@ use KeythKatz\TelegramBotCore\Method\{
 	SendMessage,
 	ForwardMessage,
 	SendPhoto,
-	SendDocument
+	SendAudio,
+	SendDocument,
+	SendVideo,
+	SendVoice
 };
 
 abstract class TelegramBotCore
@@ -94,6 +97,33 @@ abstract class TelegramBotCore
 	public function sendDocument(): SendDocument
 	{
 		return new SendDocument(static::$token, $this);
+	}
+
+	/**
+	 * Create a new SendAudio.
+	 * @return SendAudio new blank SendAudio.
+	 */
+	public function sendAudio(): SendAudio
+	{
+		return new SendAudio(static::$token, $this);
+	}
+
+	/**
+	 * Create a new SendVideo.
+	 * @return SendVideo new blank SendVideo.
+	 */
+	public function sendVideo(): SendVideo
+	{
+		return new SendVideo(static::$token, $this);
+	}
+
+	/**
+	 * Create a new SendVoice.
+	 * @return SendVoice new blank SendVoice.
+	 */
+	public function sendVoice(): SendVoice
+	{
+		return new SendVoice(static::$token, $this);
 	}
 
 	/**
