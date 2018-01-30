@@ -25,7 +25,7 @@ abstract class BaseType
 			} else {
 				if ($this->$camelCasedParam instanceof self) {
 					$mappedParams[$param] = $this->$camelCasedParam->toJson();
-				} else {
+				} else if ($this->$camelCasedParam !== null){
 					$mappedParams[$param] = $this->$camelCasedParam;
 				}
 			}

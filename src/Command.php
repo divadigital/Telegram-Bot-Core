@@ -4,12 +4,15 @@ declare(strict_types=1);
 namespace KeythKatz\TelegramBotCore;
 
 use KeythKatz\TelegramBotCore\Method\{
+	Method,
 	SendMessage,
 	SendAudio,
 	SendPhoto,
 	SendDocument,
 	SendVideo,
-	SendVoice
+	SendVoice,
+	SendVideoNote,
+	SendMediaGroup
 };
 
 abstract class Command
@@ -206,6 +209,48 @@ abstract class Command
 		return $m;
 	}
 
+	/**
+	 * Send a video note.
+	 * @return SendVideoNote new SendVideoNote.
+	 */
+	public function sendVideoNote(): SendVideoNote
+	{
+		return $this->bot->sendVideoNote();
+	}
+
+	/**
+	 * Send a video note back to the chat.
+	 * @param  bool|boolean $quoteOriginal If the original message should be quoted when replying. False by default.
+	 * @return SendVideoNote                New SendVideoNote.
+	 */
+	public function sendVideoNoteReply(bool $quoteOriginal = false): SendVideoNote
+	{
+		$m = $this->bot->sendVideoNote();
+		$this->setReplyMarkup($m, $quoteOriginal);
+		return $m;
+	}
+
+	/**
+	 * Send a media group.
+	 * @return SendMediaGroup new SendMediaGroup.
+	 */
+	public function sendMediaGroup(): SendMediaGroup
+	{
+		return $this->bot->sendMediaGroup();
+	}
+
+	/**
+	 * Send a media group back to the chat.
+	 * @param  bool|boolean $quoteOriginal If the original message should be quoted when replying. False by default.
+	 * @return SendMediaGroup                New SendMediaGroup.
+	 */
+	public function sendMediaGroupReply(bool $quoteOriginal = false): SendMediaGroup
+	{
+		$m = $this->bot->sendMediaGroup();
+		$this->setReplyMarkup($m, $quoteOriginal);
+		return $m;
+	}
+
 	public function getName(): string
 	{
 		return $this->name;
@@ -216,7 +261,7 @@ abstract class Command
 		return $this->helpText;
 	}
 
-	private function setReplyMarkup($m, bool $quoteOriginal): void
+	private function setReplyMarkup(Method $m, bool $quoteOriginal): void
 	{
 		$m->setChatId($this->message->getChat()->getId());
 

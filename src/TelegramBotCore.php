@@ -14,7 +14,9 @@ use KeythKatz\TelegramBotCore\Method\{
 	SendAudio,
 	SendDocument,
 	SendVideo,
-	SendVoice
+	SendVoice,
+	SendVideoNote,
+	SendMediaGroup
 };
 
 abstract class TelegramBotCore
@@ -124,6 +126,24 @@ abstract class TelegramBotCore
 	public function sendVoice(): SendVoice
 	{
 		return new SendVoice(static::$token, $this);
+	}
+
+	/**
+	 * Create a new SendVideoNote.
+	 * @return SendVideoNote new blank SendVideoNote.
+	 */
+	public function sendVideoNote(): SendVideoNote
+	{
+		return new SendVideoNote(static::$token, $this);
+	}
+
+	/**
+	 * Create a new SendMediaGroup.
+	 * @return SendMediaGroup new blank SendMediaGroup.
+	 */
+	public function sendMediaGroup(): SendMediaGroup
+	{
+		return new SendMediaGroup(static::$token, $this);
 	}
 
 	/**

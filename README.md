@@ -52,7 +52,7 @@ class EchoCommand extends \KeythKatz\TelegramBotCore\Command
 	{
 		$reply = $this->createMessageReply();
 		$reply->setText($arguments);
-		$reply->send();
+		$response = $reply->send(); // Get Telegram's response
 	}
 }
 ```
@@ -160,7 +160,19 @@ Anywhere where `InputFile` is specified in the Telegram API, you may just send
 a resource, e.g. `fopen($file, 'r')`. Alternatively, you may encapsulate it in a
 `InputFile` class, e.g. `new InputFile(fopen($file, 'r'))`.
 
+### Async
+This library supports synchronous sending of messages via `Guzzle/Promises`.
+To send a message asynchronously, just change `send()` to `sendAsync()`.
+Both methods return Telegram's response, whatever it is according to the Telegram API.
+
 ## Checklist
+
+### Bot functionality
+- [x] Process Commands
+- [ ] Handle CallbackQueries
+- [ ] Process plaintext
+- [ ] Process messages from specific user
+- [ ] Block user
 
 ### Methods
 - [x] sendMessage
@@ -170,12 +182,18 @@ a resource, e.g. `fopen($file, 'r')`. Alternatively, you may encapsulate it in a
 - [x] sendDocument
 - [x] sendVideo
 - [x] sendVoice
-- [ ] sendVideoNote
-- [ ] sendMediaGroup
+- [x] sendVideoNote
+- [x] sendMediaGroup
 - [ ] sendLocation
 - [ ] editMessageLiveLocation
 - [ ] stopMessageLiveLocation
-- [ ] ... and so on
+- [ ] sendVenue
+- [ ] sendContact
+- [ ] sendChatAction
+- [ ] getUserProfilePhotos
+- [ ] getFile
+- [ ] ... chat and sticker functions out of scope for now
+- [ ] answerCallbackQuery
 
 ### Types
 - [x] ReplyKeyboardMarkup
@@ -184,9 +202,9 @@ a resource, e.g. `fopen($file, 'r')`. Alternatively, you may encapsulate it in a
 - [x] InlineKeyboardMarkup
 - [x] InlineKeyboardButton
 - [x] ForceReply
-- [ ] InputMedia
-- [ ] InputMediaPhoto
-- [ ] InputMediaVideo
+- [x] InputMedia
+- [x] InputMediaPhoto
+- [x] InputMediaVideo
 - [X] InputFile
 
 Types that are receive-only (from an Update object) are handled by `telegram-bot/api` and are not tracked.
