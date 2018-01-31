@@ -16,7 +16,10 @@ use KeythKatz\TelegramBotCore\Method\{
 	SendVideo,
 	SendVoice,
 	SendVideoNote,
-	SendMediaGroup
+	SendMediaGroup,
+	SendLocation,
+	EditMessageLiveLocation,
+	StopMessageLiveLocation
 };
 
 abstract class TelegramBotCore
@@ -144,6 +147,33 @@ abstract class TelegramBotCore
 	public function sendMediaGroup(): SendMediaGroup
 	{
 		return new SendMediaGroup(static::$token, $this);
+	}
+
+	/**
+	 * Create a new SendLocation.
+	 * @return SendLocation new blank SendLocation.
+	 */
+	public function sendLocation(): SendLocation
+	{
+		return new SendLocation(static::$token, $this);
+	}
+
+	/**
+	 * Create a new EditMessageLiveLocation.
+	 * @return EditMessageLiveLocation new blank EditMessageLiveLocation.
+	 */
+	public function editMessageLiveLocation(): EditMessageLiveLocation
+	{
+		return new EditMessageLiveLocation(static::$token, $this);
+	}
+
+	/**
+	 * Create a new StopMessageLiveLocation.
+	 * @return StopMessageLiveLocation new blank StopMessageLiveLocation.
+	 */
+	public function stopMessageLiveLocation(): StopMessageLiveLocation
+	{
+		return new StopMessageLiveLocation(static::$token, $this);
 	}
 
 	/**

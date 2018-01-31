@@ -12,7 +12,10 @@ use KeythKatz\TelegramBotCore\Method\{
 	SendVideo,
 	SendVoice,
 	SendVideoNote,
-	SendMediaGroup
+	SendMediaGroup,
+	SendLocation,
+	EditMessageLiveLocation,
+	StopMessageLiveLocation
 };
 
 abstract class Command
@@ -248,6 +251,67 @@ abstract class Command
 	{
 		$m = $this->bot->sendMediaGroup();
 		$this->setReplyMarkup($m, $quoteOriginal);
+		return $m;
+	}
+
+	/**
+	 * Send a location.
+	 * @return SendLocation new SendLocation.
+	 */
+	public function sendLocation(): SendLocation
+	{
+		return $this->bot->sendLocation();
+	}
+
+	/**
+	 * Send a location back to the chat.
+	 * @param  bool|boolean $quoteOriginal If the original message should be quoted when replying. False by default.
+	 * @return SendLocation                New SendLocation.
+	 */
+	public function sendLocationReply(bool $quoteOriginal = false): SendLocation
+	{
+		$m = $this->bot->sendLocation();
+		$this->setReplyMarkup($m, $quoteOriginal);
+		return $m;
+	}
+
+	/**
+	 * Edit a location.
+	 * @return EditMessageLiveLocation new EditMessageLiveLocation.
+	 */
+	public function editMessageLiveLocation(): EditMessageLiveLocation
+	{
+		return $this->bot->editMessageLiveLocation();
+	}
+
+	/**
+	 * Edit a location in the chat.
+	 * @return EditMessageLiveLocation                New EditMessageLiveLocation.
+	 */
+	public function editMessageLiveLocationReply(): EditMessageLiveLocation
+	{
+		$m = $this->bot->editMessageLiveLocation();
+		$this->setReplyMarkup($m, false);
+		return $m;
+	}
+
+	/**
+	 * Stop a live location.
+	 * @return StopMessageLiveLocation new StopMessageLiveLocation.
+	 */
+	public function stopMessageLiveLocation(): StopMessageLiveLocation
+	{
+		return $this->bot->stopMessageLiveLocation();
+	}
+
+	/**
+	 * Stop a live location in the chat.
+	 * @return StopMessageLiveLocation                New StopMessageLiveLocation.
+	 */
+	public function stopMessageLiveLocationReply(): StopMessageLiveLocation
+	{
+		$m = $this->bot->stopMessageLiveLocation();
+		$this->setReplyMarkup($m, false);
 		return $m;
 	}
 

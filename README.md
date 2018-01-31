@@ -184,9 +184,9 @@ Both methods return Telegram's response, whatever it is according to the Telegra
 - [x] sendVoice
 - [x] sendVideoNote
 - [x] sendMediaGroup
-- [ ] sendLocation
-- [ ] editMessageLiveLocation
-- [ ] stopMessageLiveLocation
+- [x] sendLocation
+- [x] editMessageLiveLocation
+- [x] stopMessageLiveLocation
 - [ ] sendVenue
 - [ ] sendContact
 - [ ] sendChatAction
