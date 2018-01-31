@@ -19,7 +19,10 @@ use KeythKatz\TelegramBotCore\Method\{
 	SendMediaGroup,
 	SendLocation,
 	EditMessageLiveLocation,
-	StopMessageLiveLocation
+	StopMessageLiveLocation,
+	SendVenue,
+	SendContact,
+	SendChatAction
 };
 
 abstract class TelegramBotCore
@@ -174,6 +177,33 @@ abstract class TelegramBotCore
 	public function stopMessageLiveLocation(): StopMessageLiveLocation
 	{
 		return new StopMessageLiveLocation(static::$token, $this);
+	}
+
+	/**
+	 * Create a new SendVenue.
+	 * @return SendVenue new blank SendVenue.
+	 */
+	public function sendVenue(): SendVenue
+	{
+		return new SendVenue(static::$token, $this);
+	}
+
+	/**
+	 * Create a new SendContact.
+	 * @return SendContact new blank SendContact.
+	 */
+	public function sendContact(): SendContact
+	{
+		return new SendContact(static::$token, $this);
+	}
+
+	/**
+	 * Create a new SendChatAction.
+	 * @return SendChatAction new blank SendChatAction.
+	 */
+	public function sendChatAction(): SendChatAction
+	{
+		return new SendChatAction(static::$token, $this);
 	}
 
 	/**

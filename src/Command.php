@@ -15,7 +15,10 @@ use KeythKatz\TelegramBotCore\Method\{
 	SendMediaGroup,
 	SendLocation,
 	EditMessageLiveLocation,
-	StopMessageLiveLocation
+	StopMessageLiveLocation,
+	SendVenue,
+	SendContact,
+	SendChatAction
 };
 
 abstract class Command
@@ -311,6 +314,68 @@ abstract class Command
 	public function stopMessageLiveLocationReply(): StopMessageLiveLocation
 	{
 		$m = $this->bot->stopMessageLiveLocation();
+		$this->setReplyMarkup($m, false);
+		return $m;
+	}
+
+	/**
+	 * Send a venue.
+	 * @return SendVenue new SendVenue.
+	 */
+	public function sendVenue(): SendVenue
+	{
+		return $this->bot->sendVenue();
+	}
+
+	/**
+	 * Send a venue back to the chat.
+	 * @param  bool|boolean $quoteOriginal If the original message should be quoted when replying. False by default.
+	 * @return SendVenue                New SendVenue.
+	 */
+	public function sendVenueReply(bool $quoteOriginal = false): SendVenue
+	{
+		$m = $this->bot->sendVenue();
+		$this->setReplyMarkup($m, $quoteOriginal);
+		return $m;
+	}
+
+	/**
+	 * Send a contact.
+	 * @return SendContact new SendContact.
+	 */
+	public function sendContact(): SendContact
+	{
+		return $this->bot->sendContact();
+	}
+
+	/**
+	 * Send a contact back to the chat.
+	 * @param  bool|boolean $quoteOriginal If the original message should be quoted when replying. False by default.
+	 * @return SendContact                New SendContact.
+	 */
+	public function sendContactReply(bool $quoteOriginal = false): SendContact
+	{
+		$m = $this->bot->sendContact();
+		$this->setReplyMarkup($m, $quoteOriginal);
+		return $m;
+	}
+
+	/**
+	 * Send a chat action.
+	 * @return SendChatAction new SendChatAction.
+	 */
+	public function sendChatAction(): SendChatAction
+	{
+		return $this->bot->sendChatAction();
+	}
+
+	/**
+	 * Send a chat action back to the chat.
+	 * @return SendChatAction                New SendChatAction.
+	 */
+	public function sendChatActionReply(): SendChatAction
+	{
+		$m = $this->bot->sendChatAction();
 		$this->setReplyMarkup($m, false);
 		return $m;
 	}
