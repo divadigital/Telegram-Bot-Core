@@ -23,7 +23,8 @@ use KeythKatz\TelegramBotCore\Method\{
 	SendVenue,
 	SendContact,
 	SendChatAction,
-	GetFile
+	GetFile,
+	AnswerCallbackQuery
 };
 
 abstract class TelegramBotCore
@@ -42,6 +43,7 @@ abstract class TelegramBotCore
 
 	private $commands = [];
 	private $promises = [];
+	private $cqHandler = null;
 
 	/**
 	 * Add all your commands and handlers within this function.
@@ -64,9 +66,13 @@ abstract class TelegramBotCore
 	 * Call this function to turn on the bot when processing via webhooks.
 	 */
 	public static function webhook(): void
-	{	
+	{
+		//$log = new Logger('botlog');
+		//$log->pushHandler(new StreamHandler(__DIR__ . "/../log/botlog.log", Logger::DEBUG));
+
 		$myBot = new static();
 		if ($data = BotApi::jsonValidate(file_get_contents('php://input'), true)) {
+			//$log->debug(file_get_contents('php://input'));
 			$update = Update::fromResponse($data);
 			$myBot->processUpdate($update);
 		}
@@ -217,6 +223,15 @@ abstract class TelegramBotCore
 	}
 
 	/**
+	 * Create a new AnswerCallbackQuery.
+	 * @return AnswerCallbackQuery new blank AnswerCallbackQuery.
+	 */
+	public function answerCallbackQuery(): AnswerCallbackQuery
+	{
+		return new AnswerCallbackQuery(static::$token, $this);
+	}
+
+	/**
 	 * Add a command to the list of commands.
 	 * @param Command $handler Handler for the command.
 	 */
@@ -225,6 +240,12 @@ abstract class TelegramBotCore
 		$handler->setBot($this);
 		$command = $handler->getName();
 		$this->commands[strtoupper($command)] = $handler;
+	}
+
+	protected function setCallbackQueryHandler(CallbackQueryHandler $handler): void
+	{
+		$handler->setBot($this);
+		$this->cqHandler = $handler;
 	}
 
 	/**
@@ -237,7 +258,7 @@ abstract class TelegramBotCore
 		$this->registerHandlers();
 		$this->registerHelpCommand();
 
-		// Only care about messages
+		// messages
 		if ($update->getMessage() !== null) {
 
 			$message = $update->getMessage();
@@ -254,6 +275,19 @@ abstract class TelegramBotCore
 					$handler->setMessage($message);
 					$handler->process($arguments, $message);
 				}
+			}
+		// callback queries
+		} else if ($update->getCallbackQuery() !== null) {
+			if ($this->cqHandler !== null) {
+				$query = $update->getCallbackQuery();
+
+				$message = $query->getMessage();
+				if ($message !== null) {
+					$this->cqHandler->setMessage($message);
+				}
+
+				$this->cqHandler->setQuery($query);
+				$this->cqHandler->process($query, $message);
 			}
 		}
 

@@ -100,9 +100,7 @@ $message->setReplyMarkup($keyboard);
 $message->send();
 ```
 
-**Note: methods and types are still being implemented. The checklist is available [here](#checklist).**
-
-### The `Command` class
+### Handlers - Commands
 
 The `Command` class has helper functions, also linked to the Telegram API methods:
 ```php
@@ -124,6 +122,20 @@ From anywhere in the class, you can also interact directly with the bot or the t
 ```php
 $this->bot;
 $this->message;
+```
+
+Add it to your bot's `registerHandlers` function like so:
+```php
+$this->addCommand(new EchoCommand());
+```
+
+### Handlers - CallbackQueryHandler
+
+They work similarly to Commands. Override the `process()` function in your own class.
+
+Add it to your bot's `registerHandlers` function like so:
+```php
+$this->setCallbackQueryHandler(new CqHandler());
 ```
 
 ### Keyboards
@@ -169,7 +181,7 @@ Both methods return Telegram's response, whatever it is according to the Telegra
 
 ### Bot functionality
 - [x] Process Commands
-- [ ] Handle CallbackQueries
+- [x] Handle CallbackQueries
 - [ ] Process plaintext
 - [ ] Process messages from specific user
 - [ ] Block user
@@ -192,7 +204,7 @@ Both methods return Telegram's response, whatever it is according to the Telegra
 - [x] sendChatAction
 - [x] getFile
 - [ ] ... chat and sticker functions out of scope for now
-- [ ] answerCallbackQuery
+- [x] answerCallbackQuery
 
 ### Types
 - [x] ReplyKeyboardMarkup
