@@ -22,7 +22,8 @@ use KeythKatz\TelegramBotCore\Method\{
 	StopMessageLiveLocation,
 	SendVenue,
 	SendContact,
-	SendChatAction
+	SendChatAction,
+	GetFile
 };
 
 abstract class TelegramBotCore
@@ -204,6 +205,15 @@ abstract class TelegramBotCore
 	public function sendChatAction(): SendChatAction
 	{
 		return new SendChatAction(static::$token, $this);
+	}
+
+	/**
+	 * Create a new GetFile.
+	 * @return GetFile new blank GetFile.
+	 */
+	public function getFile(): GetFile
+	{
+		return new GetFile(static::$token, $this);
 	}
 
 	/**

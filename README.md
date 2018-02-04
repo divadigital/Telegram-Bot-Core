@@ -190,7 +190,7 @@ Both methods return Telegram's response, whatever it is according to the Telegra
 - [x] sendVenue
 - [x] sendContact
 - [x] sendChatAction
-- [ ] getFile
+- [x] getFile
 - [ ] ... chat and sticker functions out of scope for now
 - [ ] answerCallbackQuery
 

@@ -18,7 +18,8 @@ use KeythKatz\TelegramBotCore\Method\{
 	StopMessageLiveLocation,
 	SendVenue,
 	SendContact,
-	SendChatAction
+	SendChatAction,
+	GetFile
 };
 
 abstract class Command
@@ -378,6 +379,15 @@ abstract class Command
 		$m = $this->bot->sendChatAction();
 		$this->setReplyMarkup($m, false);
 		return $m;
+	}
+
+	/**
+	 * Get file information.
+	 * @return GetFile new GetFile.
+	 */
+	public function getFile(): GetFile
+	{
+		return $this->bot->getFile();
 	}
 
 	public function getName(): string
