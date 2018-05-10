@@ -184,7 +184,7 @@ Both methods return Telegram's response, whatever it is according to the Telegra
 - [x] Handle CallbackQueries
 - [ ] Process plaintext
 - [ ] Process messages from specific user
-- [ ] Block user
+- [x] Block user
 
 ### Methods
 - [x] sendMessage

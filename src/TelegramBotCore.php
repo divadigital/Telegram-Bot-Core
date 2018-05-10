@@ -44,6 +44,7 @@ abstract class TelegramBotCore
 	private $commands = [];
 	private $promises = [];
 	private $cqHandler = null;
+	private $bannedUsers = [];
 
 	/**
 	 * Add all your commands and handlers within this function.
@@ -241,11 +242,25 @@ abstract class TelegramBotCore
 		$command = $handler->getName();
 		$this->commands[strtoupper($command)] = $handler;
 	}
-
+	
+	/**
+	 * Set the handler to handle callback queries.
+	 * @param CallbackQueryHandler $handler CallbackQuery handler.
+	 */
 	protected function setCallbackQueryHandler(CallbackQueryHandler $handler): void
 	{
 		$handler->setBot($this);
 		$this->cqHandler = $handler;
+	}
+
+	/**
+	 * Add a user whose messages will not be banned.
+	 * The users will be alerted when they attempt to interact with the bot.
+	 * @param int $id User ID to ban.
+	 */
+	protected function addBannedUser(int $id): void
+	{
+		array_push($this->bannedUsers, $id);
 	}
 
 	/**
@@ -263,6 +278,13 @@ abstract class TelegramBotCore
 
 			$message = $update->getMessage();
 
+			// Banned users
+			$senderId = $message->getFrom()->getId();
+			if ($this->userIsBanned($senderId)) {
+				$this->replyBannedUser($message->getChat()->getId(), $senderId);
+				return;
+			}
+
 			// Parse for valid targeted command
 			$rawMessage = $message->getText();
 			if (substr($rawMessage, 0, 1) === '/') {
@@ -275,11 +297,20 @@ abstract class TelegramBotCore
 					$handler->setMessage($message);
 					$handler->process($arguments, $message);
 				}
+			// Plain text
+			} else {
+
 			}
 		// callback queries
 		} else if ($update->getCallbackQuery() !== null) {
 			if ($this->cqHandler !== null) {
 				$query = $update->getCallbackQuery();
+
+				$senderId = $query->getFrom()->getId();
+				if ($this->userIsBanned($senderId)) {
+					$this->replyBannedUser($query->getMessage()->getChat()->getId(), $senderId);
+					return;
+				}
 
 				$message = $query->getMessage();
 				if ($message !== null) {
@@ -303,6 +334,19 @@ abstract class TelegramBotCore
 			$update = Update::fromResponse($data);
 			$myBot->processUpdate($update);
 		}
+	}
+
+	private function userIsBanned(int $id): bool
+	{
+		return in_array($id, $this->bannedUsers);
+	}
+
+	private function replyBannedUser($chatId, int $userId): void
+	{
+		$reply = $this->sendMessage();
+		$reply->setChatId($chatId);
+		$reply->setText("You are currently banned.");
+		$reply->send();
 	}
 
 	private function registerHelpCommand(): void
