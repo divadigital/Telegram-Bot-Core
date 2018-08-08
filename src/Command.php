@@ -395,7 +395,7 @@ abstract class Command
 		return $this->name;
 	}
 
-	public function getHelpText(): string
+	public function getHelpText(): ?string
 	{
 		return $this->helpText;
 	}
