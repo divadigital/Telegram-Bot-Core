@@ -27,6 +27,9 @@ use KeythKatz\TelegramBotCore\Method\{
 	AnswerCallbackQuery
 };
 
+//use Monolog\Logger;
+//use Monolog\Handler\StreamHandler;
+
 abstract class TelegramBotCore
 {
 	/**
@@ -44,6 +47,7 @@ abstract class TelegramBotCore
 	private $commands = [];
 	private $promises = [];
 	private $cqHandler = null;
+	private $genericMessageHandler = null;
 	private $bannedUsers = [];
 
 	/**
@@ -74,6 +78,19 @@ abstract class TelegramBotCore
 		$myBot = new static();
 		if ($data = BotApi::jsonValidate(file_get_contents('php://input'), true)) {
 			//$log->debug(file_get_contents('php://input'));
+			$update = Update::fromResponse($data);
+			$myBot->processUpdate($update);
+		}
+	}
+
+	public static function testhook(string $update): void
+	{
+		//$log = new Logger('botlog');
+		//$log->pushHandler(new StreamHandler(__DIR__ . "/../log/botlog.log", Logger::DEBUG));
+
+		$myBot = new static();
+		if ($data = BotApi::jsonValidate($update, true)) {
+			//$log->debug($update);
 			$update = Update::fromResponse($data);
 			$myBot->processUpdate($update);
 		}
@@ -254,6 +271,16 @@ abstract class TelegramBotCore
 	}
 
 	/**
+	 * Set the handler to handle plaintext messages.
+	 * @param PlaintextHandler $handler Plaintext handler.
+	 */
+	protected function setGenericMessageHandler(GenericMessageHandler $handler): void
+	{
+		$handler->setBot($this);
+		$this->genericMessageHandler = $handler;
+	}
+
+	/**
 	 * Add a user whose messages will not be banned.
 	 * The users will be alerted when they attempt to interact with the bot.
 	 * @param int $id User ID to ban.
@@ -287,7 +314,7 @@ abstract class TelegramBotCore
 
 			// Parse for valid targeted command
 			$rawMessage = $message->getText();
-			if (substr($rawMessage, 0, 1) === '/') {
+			if ($rawMessage !== null && substr($rawMessage, 0, 1) === '/') {
 
 				list($command, $arguments) = $this->splitMessage($rawMessage);
 
@@ -297,9 +324,10 @@ abstract class TelegramBotCore
 					$handler->setMessage($message);
 					$handler->process($arguments, $message);
 				}
-			// Plain text
+			// Raw Message
 			} else {
-
+				$this->genericMessageHandler->setMessage($message);
+				$this->genericMessageHandler->process($message);
 			}
 		// callback queries
 		} else if ($update->getCallbackQuery() !== null) {
@@ -325,15 +353,6 @@ abstract class TelegramBotCore
 		$this->finishPromises();
 
 		echo "Everything will be okay";
-	}
-
-	public static function testhook(string $update): void
-	{
-		$myBot = new static();
-		if ($data = BotApi::jsonValidate($update, true)) {
-			$update = Update::fromResponse($data);
-			$myBot->processUpdate($update);
-		}
 	}
 
 	private function userIsBanned(int $id): bool

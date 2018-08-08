@@ -50,7 +50,7 @@ class EchoCommand extends \KeythKatz\TelegramBotCore\Command
 	 */
 	public function process($arguments, $message)
 	{
-		$reply = $this->createMessageReply();
+		$reply = $this->sendMessageReply();
 		$reply->setText($arguments);
 		$response = $reply->send(); // Get Telegram's response
 	}
@@ -89,7 +89,7 @@ libraries work the same way, with getters and setters.
 Example: Sending an inline keyboard from a command
 
 ```php
-$message = $this->createMessageReply();
+$message = $this->sendMessageReply();
 $message->setText("Hello World");
 
 // Traditional way of setting up a keyboard. Helper functions are available.
@@ -105,13 +105,13 @@ $message->send();
 The `Command` class has helper functions, also linked to the Telegram API methods:
 ```php
 // Create a new SendMessage linked to the bot.
-$this->sendMessage();
+$message = $this->sendMessage();
 
 // Add Reply to any method name to create it with the chatId prefilled.
 // Set $quoteOriginal to true to reply directly to the triggering message.
-$this->sendMessageReply($quoteOriginal = false);
+$message = $this->sendMessageReply($quoteOriginal = false);
 
-// Forward the triggering message to another chat.
+// Forward the triggering message to another chat immediately.
 // Set $disableNofication to true to send the message silently.
 $this->forwardMessage($toChatId, $disableNotification = false);
 
@@ -182,7 +182,7 @@ Both methods return Telegram's response, whatever it is according to the Telegra
 ### Bot functionality
 - [x] Process Commands
 - [x] Handle CallbackQueries
-- [ ] Process plaintext
+- [x] Process generic messages without command
 - [ ] Process messages from specific user
 - [x] Block user
 
