@@ -183,7 +183,6 @@ Both methods return Telegram's response, whatever it is according to the Telegra
 - [x] Process Commands
 - [x] Handle CallbackQueries
 - [x] Process generic messages without command
-- [ ] Process messages from specific user
 - [x] Block user
 
 ### Methods
