@@ -21,6 +21,7 @@ composer require keythkatz/telegram-bot-core
 class ExampleBot extends \KeythKatz\TelegramBotCore\TelegramBotCore {
 	protected static $token = "your telegram API token here";
 	protected static $username = "@YourBotsUsername";
+	protected static $storageLocation = __DIR__; // Change if you intend to use Conversations
 
 	protected function registerHandlers()
 	{
@@ -100,7 +101,60 @@ $message->setReplyMarkup($keyboard);
 $message->send();
 ```
 
+### TelegramBotCore
+
+```php
+abstract class TelegramBotCore {
+	/**
+	 * Token given by telegram for the bot.
+	 * @var string
+	 */
+	protected static $token = null; // Override this
+
+	/**
+	 * Username of the bot, e.g. @exampleBot
+	 * @var string
+	 */
+	protected static $username = null; // Override this
+
+	/**
+	 * Directory to store conversation files
+	 * @var string
+	 */
+	protected static $storageLocation = __DIR__; // Optionally override this, but override if you are using Conversations
+
+	/**
+	 * Add all your commands and handlers within this function.
+	 */
+	abstract protected function registerHandlers();
+
+	/**
+	 * Call this function to turn on the bot when processing via webhooks.
+	 */
+	public static function webhook(): void
+}
+```
+
 ### Handlers - Commands
+
+```php
+abstract class Command extends ForwardableHandler {
+	protected $name = null; // Override this
+	protected $helpText = ""; // Optionally override this
+
+	/**
+	 * What to do when the command is called.
+	 * @param  string $arguments Arguments entered by the user.
+	 * @param \TelegramBot\Api\Types\Message $message Message object that triggered this command.
+	 */
+	abstract public function process($arguments, $message);
+}
+```
+
+To create a new Command, extend `\KeythKatz\TelegramBotCore\Command`, and override
+`$name` with the name of the command, which will be triggered by `/name`. Optionally override
+`$helpText` to provide a help text which will be shown via the auto-generated `/help`. If it is
+left as null or as an empty string, the command will not be shown in `/help`.
 
 The `Command` class has helper functions, also linked to the Telegram API methods:
 ```php
@@ -115,7 +169,7 @@ $message = $this->sendMessageReply($quoteOriginal = false);
 // Set $disableNofication to true to send the message silently.
 $this->forwardMessage($toChatId, $disableNotification = false);
 
-...
+// And other API methods...
 ```
 
 From anywhere in the class, you can also interact directly with the bot or the triggering message using:
@@ -131,17 +185,61 @@ $this->addCommand(new EchoCommand());
 
 ### Handlers - CallbackQueryHandler
 
-They work similarly to Commands. Override the `process()` function in your own class.
+```php
+abstract class CallbackQueryHandler extends BaseHandler {
+	/**
+	 * What to do when the bot receives a CallbackQuery.
+	 * @param  CallbackQuery $query received CallbackQuery.
+	 * @param  \TelegramBot\Api\Types\Message $message Message that the callback button originated from.
+	 *                          May be null if the message is too old.
+	 */
+	abstract public function process(CallbackQuery $query, \TelegramBot\Api\Types\Message $message);
+}
+```
+
+The `CallbackQueryHandler` works similarly to Commands. Override the `process()` function in your own class.
+
+From anywhere in the class, you can also interact directly with the bot or the triggering query using:
+```php
+$this->bot;
+$this->query;
+```
 
 Add it to your bot's `registerHandlers` function like so:
 ```php
 $this->setCallbackQueryHandler(new CqHandler());
 ```
 
+### Handlers - GenericMessageHandler
+
+```php
+abstract class GenericMessageHandler extends ForwardableHandler {
+	/**
+	 * What to do when the command is called.
+	 * @param  string $arguments Arguments entered by the user.
+	 * @param \TelegramBot\Api\Types\Message $message Message object that triggered this command.
+	 */
+	abstract public function process(\TelegramBot\Api\Types\Message $message);
+}
+```
+
+The `GenericMessageHandler` works similarly to Commands. Override the `process()` function in your own class.
+
+From anywhere in the class, you can also interact directly with the bot or the triggering message using:
+```php
+$this->bot;
+$this->message;
+```
+
+Add it to your bot's `registerHandlers` function like so:
+```php
+$this->setGenericMessageHandler(new DefaultMessageHandler());
+```
+
 ### Keyboards
 `InlineKeyboardMarkup` and `ReplyKeyboardMarkup` have helper functions.
 
-There are two ways to create a keyboard. The first is directly creation:
+There are two ways to create a keyboard. The first is direct creation:
 ```php
 $keyboard = new InlineKeyboardMarkup([[["Click Me" => "https://google.com"]]]);
 // or
@@ -160,11 +258,124 @@ $button->setCallbackData("12345"); // or any other field in the telegram docs
 // Add to the keyboard
 $keyboard->addButton($button);
 
-// Add a new row
+// Add a new row. Added buttons after this will be on the new row.
 $keyboard->addRow();
 
 // Add a button to any row, 0-indexed
 $keyboard->addButton($button, 0);
+```
+
+### Conversations
+
+```php
+abstract class Conversation extends ForwardableHandler {
+	/**
+	 * Chat ID that the conversation belongs to.
+	 * @var int
+	 */
+	protected $chatId;
+
+	/**
+	 * ID of the user that initiated the conversation.
+	 * @var int
+	 */
+	protected $userId;
+
+	/**
+	 * Initialise stages here by calling $this->addStage() for each stage.
+	 */
+	abstract public function initialize();
+
+	/**
+	 * Add a stage.
+	 * @param string   $name     Name of the stage.
+	 * @param string   $message  Message to send and ask a reply to.
+	 * @param callable $callback Callback that is called with the replying message as a parameter.
+	 */
+	protected function addStage(string $name, string $message, callable $callback): void
+
+	/**
+	 * Save data that will be persistant across conversations.
+	 * @param  string $name Name of the data.
+	 * @param  anything $data Data to be stored.
+	 */
+	protected function saveData(string $name, $data): void
+
+	/**
+	 * Load saved data.
+	 * @param  string $name Name of the data.
+	 * @return anything       Saved data.
+	 */
+	protected function loadData(string $name)
+
+	/**
+	 * Repeat the current stage, for example on invalid input.
+	 */
+	protected function repeatStage(): void
+
+	/**
+	 * Set the current stage, i.e. move on in the conversation.
+	 * @param string $name Name of the stage to move to.
+	 */
+	protected function setStage(string $name): void
+}
+```
+
+Conversations allow input to be done over multiple messages. They are handled via "stages".
+For each stage, provide a name, a message that is sent that is to be replied to by the user, and the callback
+for the reply, which takes a `\TelegramBot\Api\Types\Message` object.
+The first stage added will be the starting point of the conversation.
+
+Data can be saved and loaded in the conversation.
+
+Example:
+```php
+class ExampleConversation extends \KeythKatz\TelegramBotCore\Conversation {
+	public function initialize() {
+		$this->addStage("start", "Enter a message.",
+			function($message) {
+				if ($message->getText() === null) {
+					// No text found, show an error and repeat the question.
+					$reply = $this->sendMessageReply();
+					$reply->setText("You did not enter anything.");
+					$reply->send();
+					$this->repeatStage();
+				} else {
+					$this->saveData("message 1", $message->getText());
+					$this->setStage("next message");
+				}
+			}
+		);
+
+		$this->addStage("next message", "Enter another message.",
+			function($message) {
+				if ($message->getText() === null) {
+					// No text found, show an error and repeat the question.
+					$reply = $this->sendMessageReply();
+					$reply->setText("You did not enter anything.");
+					$reply->send();
+					$this->repeatStage();
+				} else {
+					$text1 = $this->loadData("message 1");
+					$text2 = $message->getText();
+					$reply = $this->sendMessageReply();
+					$reply->setText("You entered $text1 and $text2");
+					$reply->send();
+				}
+			}
+		);
+	}
+}
+```
+
+Call `$this->startConversation(new ExampleConversation())` from any handler, including other conversations, to start it.
+
+```
+Bot: Enter a message.
+User: 123
+Bot: Enter another message.
+User: abc
+Bot: You entered 123 and abc
 ```
 
 ### InputFile

@@ -16,10 +16,10 @@ abstract class CallbackQueryHandler extends BaseHandler
 	/**
 	 * What to do when the bot receives a CallbackQuery.
 	 * @param  CallbackQuery $query received CallbackQuery.
-	 * @param  Message $message Message that the callback button originated from.
+	 * @param  \TelegramBot\Api\Types\Message $message Message that the callback button originated from.
 	 *                          May be null if the message is too old.
 	 */
-	abstract public function process(CallbackQuery $query, Message $message);
+	abstract public function process(CallbackQuery $query, \TelegramBot\Api\Types\Message $message);
 
 	/**
 	 * Set the CallbackQuery that triggered this handler.

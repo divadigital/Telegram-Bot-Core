@@ -21,7 +21,7 @@ abstract class Command extends ForwardableHandler
 	/**
 	 * What to do when the command is called.
 	 * @param  string $arguments Arguments entered by the user.
-	 * @param Message $message Message object that triggered this command.
+	 * @param \TelegramBot\Api\Types\Message $message Message object that triggered this command.
 	 */
 	abstract public function process(string $arguments, \TelegramBot\Api\Types\Message $message);
 
