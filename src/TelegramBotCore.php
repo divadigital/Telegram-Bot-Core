@@ -328,17 +328,7 @@ abstract class TelegramBotCore
 				$fileName = static::$storageLocation . "/{$botName}_{$chatId}_{$userId}_{$repliedMessageId}";
 
 				if (file_exists($fileName)) {
-					$m = $this->sendMessage();
-					$m->setText("Conversation found");
-					$m->setChatId($chatId);
-					$m->send();
-
 					\KeythKatz\TelegramBotCore\Conversation::resumeConversation($fileName, $message, $this);
-
-					$m = $this->sendMessage();
-					$m->setText("Resume success");
-					$m->setChatId($chatId);
-					$m->send();
 				}
 
 				return;

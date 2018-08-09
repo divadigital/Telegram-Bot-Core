@@ -172,5 +172,6 @@ abstract class Conversation extends ForwardableHandler
 		$conversation->callback($message);
 
 		fclose($file);
+		unlink($fileName);
 	}
 }
