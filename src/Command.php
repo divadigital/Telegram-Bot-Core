@@ -381,6 +381,13 @@ abstract class Command
 		return $m;
 	}
 
+	public function startConversation(\KeythKatz\TelegramBotCore\Conversation $conversation): void
+	{
+		$conversation->setBot($this->bot);
+		$conversation->setMessage($this->message);
+		$conversation->start();
+	}
+
 	/**
 	 * Get file information.
 	 * @return GetFile new GetFile.

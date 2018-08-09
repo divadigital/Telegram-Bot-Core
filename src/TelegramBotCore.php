@@ -44,6 +44,12 @@ abstract class TelegramBotCore
 	 */
 	protected static $username = null;
 
+	/**
+	 * Directory to store conversation files
+	 * @var string
+	 */
+	protected static $storageLocation = __DIR__;
+
 	private $commands = [];
 	private $promises = [];
 	private $cqHandler = null;
@@ -312,6 +318,32 @@ abstract class TelegramBotCore
 				return;
 			}
 
+			// Check for conversations
+			if ($message->getReplyToMessage() !== null) {
+				$repliedMessage = $message->getReplyToMessage();
+				$repliedMessageId = $repliedMessage->getMessageId();
+				$chatId = $message->getChat()->getId();
+				$userId = $message->getFrom()->getId();
+				$botName = static::$username;
+				$fileName = static::$storageLocation . "/{$botName}_{$chatId}_{$userId}_{$repliedMessageId}";
+
+				if (file_exists($fileName)) {
+					$m = $this->sendMessage();
+					$m->setText("Conversation found");
+					$m->setChatId($chatId);
+					$m->send();
+
+					\KeythKatz\TelegramBotCore\Conversation::resumeConversation($fileName, $message, $this);
+
+					$m = $this->sendMessage();
+					$m->setText("Resume success");
+					$m->setChatId($chatId);
+					$m->send();
+				}
+
+				return;
+			}
+
 			// Parse for valid targeted command
 			$rawMessage = $message->getText();
 			if ($rawMessage !== null && substr($rawMessage, 0, 1) === '/') {
@@ -329,7 +361,7 @@ abstract class TelegramBotCore
 				$this->genericMessageHandler->setMessage($message);
 				$this->genericMessageHandler->process($message);
 			}
-		// callback queries
+		// Callback queries
 		} else if ($update->getCallbackQuery() !== null) {
 			if ($this->cqHandler !== null) {
 				$query = $update->getCallbackQuery();
@@ -371,7 +403,7 @@ abstract class TelegramBotCore
 	private function registerHelpCommand(): void
 	{
 		if (!isset($this->commands["HELP"])) {
-			$this->addCommand(new HelpCommand($this->commands));
+			$this->addCommand(new \KeythKatz\TelegramBotCore\HelpCommand($this->commands));
 		}
 	}
 
@@ -389,6 +421,16 @@ abstract class TelegramBotCore
 				echo "<pre>" . $e->getMessage() . "\r\n</pre>";
 			}
 		}
+	}
+
+	public function getUsername(): string
+	{
+		return static::$username;
+	}
+
+	public function getStorageLocation(): string
+	{
+		return static::$storageLocation;
 	}
 
 	private function splitMessage(string $rawMessage): array
