@@ -42,35 +42,6 @@ abstract class Conversation extends ForwardableHandler
 	abstract public function initialize();
 
 	/**
-	 * Sets the bot that the conversation belongs to. Done by the framework.
-	 * @param \KeythKatz\TelegramBotCore\TelegramBotCore $bot
-	 */
-	public function setBot(\KeythKatz\TelegramBotCore\TelegramBotCore $bot): void
-	{
-		$this->bot = $bot;
-	}
-
-	/**
-	 * Sets the message that last affected the conversation. Done by the framework.
-	 * @param \TelegramBot\Api\Types\Message $message
-	 */
-	public function setMessage(\TelegramBot\Api\Types\Message $message): void
-	{
-		$this->message = $message;
-		$this->chatId = $this->message->getChat()->getId();
-		$this->userId = $this->message->getFrom()->getId();
-	}
-
-	/**
-	 * Start the conversation from the first added stage.
-	 */
-	public function start(): void
-	{
-		$this->initialize();
-		$this->startStage(array_keys($this->stages)[0]);
-	}
-
-	/**
 	 * Add a stage.
 	 * @param string   $name     Name of the stage.
 	 * @param string   $message  Message to send and ask a reply to.
@@ -117,6 +88,35 @@ abstract class Conversation extends ForwardableHandler
 	protected function setStage(string $name): void
 	{
 		$this->startStage($name);
+	}
+
+	/**
+	 * Sets the bot that the conversation belongs to. Done by the framework.
+	 * @param \KeythKatz\TelegramBotCore\TelegramBotCore $bot
+	 */
+	public function setBot(\KeythKatz\TelegramBotCore\TelegramBotCore $bot): void
+	{
+		$this->bot = $bot;
+	}
+
+	/**
+	 * Sets the message that last affected the conversation. Done by the framework.
+	 * @param \TelegramBot\Api\Types\Message $message
+	 */
+	public function setMessage(\TelegramBot\Api\Types\Message $message): void
+	{
+		$this->message = $message;
+		$this->chatId = $this->message->getChat()->getId();
+		$this->userId = $this->message->getFrom()->getId();
+	}
+
+	/**
+	 * Start the conversation from the first added stage.
+	 */
+	public function start(): void
+	{
+		$this->initialize();
+		$this->startStage(array_keys($this->stages)[0]);
 	}
 
 	private function startStage(string $name): void

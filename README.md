@@ -183,6 +183,8 @@ Add it to your bot's `registerHandlers` function like so:
 $this->addCommand(new EchoCommand());
 ```
 
+To call a command without user input, call `$this->runCommand(new EchoCommand(), $arguments)` from any handler. `$arguments` is optional and is an empty string by default.
+
 ### Handlers - CallbackQueryHandler
 
 ```php

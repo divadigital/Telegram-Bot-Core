@@ -60,11 +60,18 @@ abstract class BaseHandler
 	 * Start a new Conversation.
 	 * @param  \KeythKatz\TelegramBotCore\Conversation $conversation instance of a conversation.
 	 */
-	public function startConversation(\KeythKatz\TelegramBotCore\Conversation $conversation): void
+	protected function startConversation(\KeythKatz\TelegramBotCore\Conversation $conversation): void
 	{
 		$conversation->setBot($this->bot);
 		$conversation->setMessage($this->message);
 		$conversation->start();
+	}
+
+	protected function runCommand(\KeythKatz\TelegramBotCore\Command $command, string $arguments = ""): void
+	{
+		$command->setBot($this->bot);
+		$command->setMessage($this->message);
+		$command->process($arguments, $this->message);
 	}
 
 	/**
