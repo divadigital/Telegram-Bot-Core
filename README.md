@@ -15,14 +15,10 @@ composer require keythkatz/telegram-bot-core
 
 ## Quickstart
 
-### Create a bot
+### Create a bot class
 
 ```php
 class ExampleBot extends \KeythKatz\TelegramBotCore\TelegramBotCore {
-	protected static $token = "your telegram API token here";
-	protected static $username = "@YourBotsUsername";
-	protected static $storageLocation = __DIR__; // Change if you intend to use Conversations
-
 	protected function registerHandlers()
 	{
 		// We will fill in this part later
@@ -69,7 +65,8 @@ protected function registerHandlers()
 ### Set up a Webhook
 From wherever you told Telegram to send you updates, call your bot:
 ```php
-ExampleBot::webhook();
+$bot = new ExampleBot("@BotUsername", "BotToken", "StorageDirectory"); // Storage Directory if you are using Conversations
+$bot->webhook();
 ```
 
 That's it! Now `/echo` and `/help` should work.
@@ -328,7 +325,7 @@ For each stage, provide a name, a message that is sent that is to be replied to 
 for the reply, which takes a `\TelegramBot\Api\Types\Message` object.
 The first stage added will be the starting point of the conversation.
 
-Data can be saved and loaded in the conversation.
+Data can be saved and loaded in the conversation, and is stored in a file in a specified directory.
 
 Example:
 ```php

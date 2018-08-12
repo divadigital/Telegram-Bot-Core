@@ -36,19 +36,19 @@ abstract class TelegramBotCore
 	 * Token given by telegram for the bot.
 	 * @var string
 	 */
-	protected static $token = null;
+	protected $token = null;
 
 	/**
 	 * Username of the bot, e.g. @exampleBot
 	 * @var string
 	 */
-	protected static $username = null;
+	protected $username = null;
 
 	/**
 	 * Directory to store conversation files
 	 * @var string
 	 */
-	protected static $storageLocation = __DIR__;
+	protected $storageLocation = __DIR__;
 
 	private $commands = [];
 	private $promises = [];
@@ -56,49 +56,29 @@ abstract class TelegramBotCore
 	private $genericMessageHandler = null;
 	private $bannedUsers = [];
 
+	public function __construct(string $username, string $token, string $storageLocation = __DIR__) {
+		$this->username = $username;
+		$this->token = $token;
+		$this->storageLocation = $storageLocation;
+	}
+
 	/**
 	 * Add all your commands and handlers within this function.
 	 */
 	abstract protected function registerHandlers();
 
-	final private function __construct()
-	{
-		// Check if bot was set up correctly
-		if (static::$token === null) {
-			throw new \Exception('$token not set');
-		}
-
-		if (static::$username === null) {
-			throw new \Exception('$username not set');
-		}
-	}
-
 	/**
 	 * Call this function to turn on the bot when processing via webhooks.
 	 */
-	public static function webhook(): void
+	public function webhook(): void
 	{
 		//$log = new Logger('botlog');
 		//$log->pushHandler(new StreamHandler(__DIR__ . "/../log/botlog.log", Logger::DEBUG));
 
-		$myBot = new static();
 		if ($data = BotApi::jsonValidate(file_get_contents('php://input'), true)) {
 			//$log->debug(file_get_contents('php://input'));
 			$update = Update::fromResponse($data);
-			$myBot->processUpdate($update);
-		}
-	}
-
-	public static function testhook(string $update): void
-	{
-		//$log = new Logger('botlog');
-		//$log->pushHandler(new StreamHandler(__DIR__ . "/../log/botlog.log", Logger::DEBUG));
-
-		$myBot = new static();
-		if ($data = BotApi::jsonValidate($update, true)) {
-			//$log->debug($update);
-			$update = Update::fromResponse($data);
-			$myBot->processUpdate($update);
+			$this->processUpdate($update);
 		}
 	}
 
@@ -108,7 +88,7 @@ abstract class TelegramBotCore
 	 */
 	public function sendMessage(): SendMessage
 	{
-		return new SendMessage(static::$token, $this);
+		return new SendMessage($this->token, $this);
 	}
 
 	/**
@@ -117,7 +97,7 @@ abstract class TelegramBotCore
 	 */
 	public function forwardMessage(): ForwardMessage
 	{
-		return new ForwardMessage(static::$token, $this);
+		return new ForwardMessage($this->token, $this);
 	}
 
 	/**
@@ -126,7 +106,7 @@ abstract class TelegramBotCore
 	 */
 	public function sendPhoto(): SendPhoto
 	{
-		return new SendPhoto(static::$token, $this);
+		return new SendPhoto($this->token, $this);
 	}
 
 	/**
@@ -135,7 +115,7 @@ abstract class TelegramBotCore
 	 */
 	public function sendDocument(): SendDocument
 	{
-		return new SendDocument(static::$token, $this);
+		return new SendDocument($this->token, $this);
 	}
 
 	/**
@@ -144,7 +124,7 @@ abstract class TelegramBotCore
 	 */
 	public function sendAudio(): SendAudio
 	{
-		return new SendAudio(static::$token, $this);
+		return new SendAudio($this->token, $this);
 	}
 
 	/**
@@ -153,7 +133,7 @@ abstract class TelegramBotCore
 	 */
 	public function sendVideo(): SendVideo
 	{
-		return new SendVideo(static::$token, $this);
+		return new SendVideo($this->token, $this);
 	}
 
 	/**
@@ -162,7 +142,7 @@ abstract class TelegramBotCore
 	 */
 	public function sendVoice(): SendVoice
 	{
-		return new SendVoice(static::$token, $this);
+		return new SendVoice($this->token, $this);
 	}
 
 	/**
@@ -171,7 +151,7 @@ abstract class TelegramBotCore
 	 */
 	public function sendVideoNote(): SendVideoNote
 	{
-		return new SendVideoNote(static::$token, $this);
+		return new SendVideoNote($this->token, $this);
 	}
 
 	/**
@@ -180,7 +160,7 @@ abstract class TelegramBotCore
 	 */
 	public function sendMediaGroup(): SendMediaGroup
 	{
-		return new SendMediaGroup(static::$token, $this);
+		return new SendMediaGroup($this->token, $this);
 	}
 
 	/**
@@ -189,7 +169,7 @@ abstract class TelegramBotCore
 	 */
 	public function sendLocation(): SendLocation
 	{
-		return new SendLocation(static::$token, $this);
+		return new SendLocation($this->token, $this);
 	}
 
 	/**
@@ -198,7 +178,7 @@ abstract class TelegramBotCore
 	 */
 	public function editMessageLiveLocation(): EditMessageLiveLocation
 	{
-		return new EditMessageLiveLocation(static::$token, $this);
+		return new EditMessageLiveLocation($this->token, $this);
 	}
 
 	/**
@@ -207,7 +187,7 @@ abstract class TelegramBotCore
 	 */
 	public function stopMessageLiveLocation(): StopMessageLiveLocation
 	{
-		return new StopMessageLiveLocation(static::$token, $this);
+		return new StopMessageLiveLocation($this->token, $this);
 	}
 
 	/**
@@ -216,7 +196,7 @@ abstract class TelegramBotCore
 	 */
 	public function sendVenue(): SendVenue
 	{
-		return new SendVenue(static::$token, $this);
+		return new SendVenue($this->token, $this);
 	}
 
 	/**
@@ -225,7 +205,7 @@ abstract class TelegramBotCore
 	 */
 	public function sendContact(): SendContact
 	{
-		return new SendContact(static::$token, $this);
+		return new SendContact($this->token, $this);
 	}
 
 	/**
@@ -234,7 +214,7 @@ abstract class TelegramBotCore
 	 */
 	public function sendChatAction(): SendChatAction
 	{
-		return new SendChatAction(static::$token, $this);
+		return new SendChatAction($this->token, $this);
 	}
 
 	/**
@@ -243,7 +223,7 @@ abstract class TelegramBotCore
 	 */
 	public function getFile(): GetFile
 	{
-		return new GetFile(static::$token, $this);
+		return new GetFile($this->token, $this);
 	}
 
 	/**
@@ -252,7 +232,7 @@ abstract class TelegramBotCore
 	 */
 	public function answerCallbackQuery(): AnswerCallbackQuery
 	{
-		return new AnswerCallbackQuery(static::$token, $this);
+		return new AnswerCallbackQuery($this->token, $this);
 	}
 
 	/**
@@ -324,8 +304,8 @@ abstract class TelegramBotCore
 				$repliedMessageId = $repliedMessage->getMessageId();
 				$chatId = $message->getChat()->getId();
 				$userId = $message->getFrom()->getId();
-				$botName = static::$username;
-				$fileName = static::$storageLocation . "/{$botName}_{$chatId}_{$userId}_{$repliedMessageId}";
+				$botName = $this->username;
+				$fileName = $this->storageLocation . "/{$botName}_{$chatId}_{$userId}_{$repliedMessageId}";
 
 				if (file_exists($fileName)) {
 					\KeythKatz\TelegramBotCore\Conversation::resumeConversation($fileName, $message, $this);
@@ -415,12 +395,12 @@ abstract class TelegramBotCore
 
 	public function getUsername(): string
 	{
-		return static::$username;
+		return $this->username;
 	}
 
 	public function getStorageLocation(): string
 	{
-		return static::$storageLocation;
+		return $this->storageLocation;
 	}
 
 	private function splitMessage(string $rawMessage): array
@@ -434,7 +414,7 @@ abstract class TelegramBotCore
 		}
 
 		// Remove own username from back of command if found
-		if (($usernamePos = stripos($rawCommand, static::$username)) === false) {
+		if (($usernamePos = stripos($rawCommand, $this->username)) === false) {
 			$command = strtoupper($rawCommand);
 		} else {
 			$command = strtoupper(substr($rawCommand, 0, $usernamePos));
