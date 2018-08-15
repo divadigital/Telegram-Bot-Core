@@ -295,7 +295,7 @@ abstract class TelegramBotCore
 			$senderId = $message->getFrom()->getId();
 			if ($this->userIsBanned($senderId)) {
 				$this->replyBannedUser($message->getChat()->getId(), $senderId);
-				return;
+				goto postProcessing;
 			}
 
 			// Check for conversations
@@ -310,8 +310,7 @@ abstract class TelegramBotCore
 				if (file_exists($fileName)) {
 					\KeythKatz\TelegramBotCore\Conversation::resumeConversation($fileName, $message, $this);
 				}
-
-				return;
+				goto postProcessing;
 			}
 
 			// Parse for valid targeted command
@@ -339,7 +338,7 @@ abstract class TelegramBotCore
 				$senderId = $query->getFrom()->getId();
 				if ($this->userIsBanned($senderId)) {
 					$this->replyBannedUser($query->getMessage()->getChat()->getId(), $senderId);
-					return;
+					goto postProcessing;
 				}
 
 				$message = $query->getMessage();
@@ -352,8 +351,8 @@ abstract class TelegramBotCore
 			}
 		}
 
+postProcessing:
 		$this->finishPromises();
-
 		echo "Everything will be okay";
 	}
 
