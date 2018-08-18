@@ -1,6 +1,7 @@
 # Telegram Bot Core
 
 Object-Oriented Bot Framework for Telegram adhering to the [Telegram Bot API](https://core.telegram.org/bots/api).
+Example bot at [KeythKatz/Stanley](https://packagist.org/packages/keythkatz/stanley).
 
 ## Requirements
 - PHP 7.2 and above
