@@ -53,7 +53,7 @@ abstract class Conversation extends ForwardableHandler
 	}
 
 	/**
-	 * Save data that will be persistant across conversations.
+	 * Save data that will be persistent across messages.
 	 * @param  string $name Name of the data.
 	 * @param  anything $data Data to be stored.
 	 */
@@ -88,15 +88,6 @@ abstract class Conversation extends ForwardableHandler
 	protected function setStage(string $name): void
 	{
 		$this->startStage($name);
-	}
-
-	/**
-	 * Sets the bot that the conversation belongs to. Done by the framework.
-	 * @param \KeythKatz\TelegramBotCore\TelegramBotCore $bot
-	 */
-	public function setBot(\KeythKatz\TelegramBotCore\TelegramBotCore $bot): void
-	{
-		$this->bot = $bot;
 	}
 
 	/**

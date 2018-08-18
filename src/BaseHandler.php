@@ -365,6 +365,11 @@ abstract class BaseHandler
 		return $m;
 	}
 
+	public function answerCallbackQuery(): AnswerCallbackQuery
+	{
+		return $this->bot->answerCallbackQuery();
+	}
+
 	/**
 	 * Get file information.
 	 * @return GetFile new GetFile.

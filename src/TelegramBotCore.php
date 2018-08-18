@@ -332,8 +332,20 @@ abstract class TelegramBotCore
 			}
 		// Callback queries
 		} else if ($update->getCallbackQuery() !== null) {
-			if ($this->cqHandler !== null) {
-				$query = $update->getCallbackQuery();
+			$query = $update->getCallbackQuery();
+
+			// Check for InteractiveMessage
+			$message = $query->getMessage();
+			if ($message != null) {
+				$botName = $this->username;
+				$chatId = $message->getChat()->getId();
+				$messageId = $message->getMessageId();
+				$fileName = $this->storageLocation . "/{$botName}_{$chatId}_interactive_{$messageId}";
+				if (file_exists($fileName)) {
+					\KeythKatz\TelegramBotCore\InteractiveMessage::handleCallbackQuery($fileName, $query, $this);
+				}
+			// Default callback query
+			} else if ($this->cqHandler !== null) {
 
 				$senderId = $query->getFrom()->getId();
 				if ($this->userIsBanned($senderId)) {

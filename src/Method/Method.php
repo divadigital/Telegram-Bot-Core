@@ -100,5 +100,8 @@ abstract class Method extends BaseType
 		array_push($this->multipart, ["name" => $name, "contents" => $resource]);
 	}
 
-	
+	public function getBot(): \KeythKatz\TelegramBotCore\TelegramBotCore
+	{
+		return $this->bot;
+	}
 }

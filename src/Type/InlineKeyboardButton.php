@@ -80,7 +80,7 @@ class InlineKeyboardButton extends BaseType
 		$this->url = $url;
 	}
 
-	public function setCallbackData(string $data): void
+	public function setCallbackData($data): void
 	{
 		$this->callbackData = $data;
 	}
