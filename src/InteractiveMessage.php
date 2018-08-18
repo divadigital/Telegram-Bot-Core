@@ -87,21 +87,29 @@ abstract class InteractiveMessage extends BaseHandler
 		else return null;
 	}
 
+	public function editMessageText(): \KeythKatz\TelegramBotCore\Method\EditMessageText
+	{
+		$m = $this->bot->editMessageText();
+		$m->setChatId($this->chatId);
+		$m->setMessageId($this->messageId);
+		return $m;
+	}
+
 	private function saveState(): void
 	{
 		$fileName = $this->bot->getStorageLocation() . "/{$this->bot->getUsername()}_{$this->chatId}_interactive_{$this->messageId}";
 		$file = fopen($fileName, "w");
 		fwrite($file, get_class($this) . "\r\n");
-		fwrite($file, $this->chatId . "\r\n");
-		fwrite($file, $this->messageId . "\r\n");
+		fwrite($file, serialize($this->chatId) . "\r\n");
+		fwrite($file, serialize($this->messageId) . "\r\n");
 		fwrite($file, serialize($this->data));
 		fclose($file);
 	}
 
 	private function loadState($file): void
 	{
-		$this->chatId = rtrim(fgets($file));
-		$this->messageId = rtrim(fgets($file));
+		$this->chatId = unserialize(rtrim(fgets($file)));
+		$this->messageId = unserialize(rtrim(fgets($file)));
 		$this->data = unserialize(rtrim(fgets($file)));
 	}
 

@@ -129,8 +129,8 @@ abstract class Conversation extends ForwardableHandler
 		$file = fopen($fileName, "w");
 		fwrite($file, get_class($this) . "\r\n");
 		fwrite($file, $stageName . "\r\n");
-		fwrite($file, $this->chatId . "\r\n");
-		fwrite($file, $this->userId . "\r\n");
+		fwrite($file, serialize($this->chatId) . "\r\n");
+		fwrite($file, serialize($this->userId) . "\r\n");
 		fwrite($file, serialize($this->data));
 		fclose($file);
 	}
@@ -138,8 +138,8 @@ abstract class Conversation extends ForwardableHandler
 	private function loadState($file): void
 	{
 		$this->initialize();
-		$this->chatId = rtrim(fgets($file));
-		$this->userId = rtrim(fgets($file));
+		$this->chatId = unserialize(rtrim(fgets($file)));
+		$this->userId = unserialize(rtrim(fgets($file)));
 		$this->data = unserialize(rtrim(fgets($file)));
 	}
 

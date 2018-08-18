@@ -24,7 +24,12 @@ use KeythKatz\TelegramBotCore\Method\{
 	SendContact,
 	SendChatAction,
 	GetFile,
-	AnswerCallbackQuery
+	AnswerCallbackQuery,
+	EditMessageText,
+	EditMessageCaption,
+	EditMessageMedia,
+	EditMessageReplyMarkup,
+	DeleteMessage
 };
 
 //use Monolog\Logger;
@@ -236,6 +241,51 @@ abstract class TelegramBotCore
 	}
 
 	/**
+	 * Create a new EditMessageText.
+	 * @return EditMessageText new blank EditMessageText.
+	 */
+	public function editMessageText(): EditMessageText
+	{
+		return new EditMessageText($this->token, $this);
+	}
+
+	/**
+	 * Create a new EditMessageCaption.
+	 * @return EditMessageCaption new blank EditMessageCaption.
+	 */
+	public function editMessageCaption(): EditMessageCaption
+	{
+		return new EditMessageCaption($this->token, $this);
+	}
+
+	/**
+	 * Create a new EditMessageMedia.
+	 * @return EditMessageMedia new blank EditMessageMedia.
+	 */
+	public function editMessageMedia(): EditMessageMedia
+	{
+		return new EditMessageMedia($this->token, $this);
+	}
+
+	/**
+	 * Create a new EditMessageReplyMarkup.
+	 * @return EditMessageReplyMarkup new blank EditMessageReplyMarkup.
+	 */
+	public function editMessageReplyMarkup(): EditMessageReplyMarkup
+	{
+		return new EditMessageReplyMarkup($this->token, $this);
+	}
+
+	/**
+	 * Create a new DeleteMessage.
+	 * @return DeleteMessage new blank DeleteMessage.
+	 */
+	public function deleteMessage(): DeleteMessage
+	{
+		return new DeleteMessage($this->token, $this);
+	}
+
+	/**
 	 * Add a command to the list of commands.
 	 * @param Command $handler Handler for the command.
 	 */
@@ -309,8 +359,8 @@ abstract class TelegramBotCore
 
 				if (file_exists($fileName)) {
 					\KeythKatz\TelegramBotCore\Conversation::resumeConversation($fileName, $message, $this);
+					goto postProcessing;
 				}
-				goto postProcessing;
 			}
 
 			// Parse for valid targeted command

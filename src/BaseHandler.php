@@ -21,7 +21,12 @@ use KeythKatz\TelegramBotCore\Method\{
 	SendContact,
 	SendChatAction,
 	GetFile,
-	AnswerCallbackQuery
+	AnswerCallbackQuery,
+	EditMessageText,
+	EditMessageCaption,
+	EditMessageMedia,
+	EditMessageReplyMarkup,
+	DeleteMessage
 };
 
 abstract class BaseHandler
@@ -365,9 +370,58 @@ abstract class BaseHandler
 		return $m;
 	}
 
+	/**
+	 * Answer a callback query.
+	 * @return AnswerCallbackQuery new AnswerCallbackQuery.
+	 */
 	public function answerCallbackQuery(): AnswerCallbackQuery
 	{
 		return $this->bot->answerCallbackQuery();
+	}
+
+	/**
+	 * Edit a message.
+	 * @return EditMessageText new EditMessageText.
+	 */
+	public function editMessageText(): EditMessageText
+	{
+		return $this->bot->editMessageText();
+	}
+
+	/**
+	 * Edit a message.
+	 * @return EditMessageCaption new EditMessageCaption.
+	 */
+	public function editMessageCaption(): EditMessageCaption
+	{
+		return $this->bot->editMessageCaption();
+	}
+
+	/**
+	 * Edit a message.
+	 * @return EditMessageMedia new EditMessageMedia.
+	 */
+	public function editMessageMedia(): EditMessageMedia
+	{
+		return $this->bot->editMessageMedia();
+	}
+
+	/**
+	 * Edit a message.
+	 * @return EditMessageReplyMarkup new EditMessageReplyMarkup.
+	 */
+	public function editMessageReplyMarkup(): EditMessageReplyMarkup
+	{
+		return $this->bot->editMessageReplyMarkup();
+	}
+
+	/**
+	 * Delete a message.
+	 * @return DeleteMessage new DeleteMessage.
+	 */
+	public function deleteMessage(): DeleteMessage
+	{
+		return $this->bot->deleteMessage();
 	}
 
 	/**
@@ -380,7 +434,7 @@ abstract class BaseHandler
 	}
 
 	private function setReplyMarkup(Method $m, bool $quoteOriginal): void
-	{	
+	{
 		if ($this->message !== null) {
 			$m->setChatId($this->message->getChat()->getId());
 		}

@@ -377,6 +377,77 @@ User: abc
 Bot: You entered 123 and abc
 ```
 
+### InteractiveMessage
+
+```php
+abstract class InteractiveMessage extends BaseHandler
+{
+	/**
+	 * The callback query that triggered this handler.
+	 * @var \TelegramBot\Api\Types\CallbackQuery
+	 */
+	protected $callbackQuery;
+
+	/**
+	 * ID of the chat that the message was sent in.
+	 * @var int
+	 */
+	protected $chatId;
+
+	/**
+	 * ID of the message that this object is handling.
+	 * @var int
+	 */
+	protected $messageId;
+
+	/**
+	 * @param \KeythKatz\TelegramBotCore\Method\Method $baseMethod Method that will be sent. Must be able to setReplyMarkup on it.
+	 */
+	public function __construct(\KeythKatz\TelegramBotCore\Method\Method $baseMethod = null)
+
+	/**
+	 * What to do when a CallbackQuery belonging to this message is received.
+	 * @param  \TelegramBot\Api\Types\CallbackQuery $callbackQuery CallbackQuery received.
+	 * @param  \TelegramBot\Api\Types\Message       $message       Message attached to the CallbackQuery
+	 */
+	abstract public function process(\TelegramBot\Api\Types\CallbackQuery $callbackQuery, \TelegramBot\Api\Types\Message $message);
+
+	/**
+	 * Set the inline keyboard for the message.
+	 * @param \KeythKatz\TelegramBotCore\Type\InlineKeyboardMarkup $keyboard InlineKeyboardMarkup to send with the message.
+	 */
+	public function setReplyMarkup(\KeythKatz\TelegramBotCore\Type\InlineKeyboardMarkup $keyboard): void
+
+	/**
+	 * Send the message. The InteractiveMessage and its data will then be saved locally.
+	 */
+	public function send(): void
+
+	/**
+	 * Save data that will be persistent.
+	 * @param  string $name Name of the data.
+	 * @param  anything $data Data to be stored.
+	 */
+	public function saveData(string $name, $data): void
+
+	/**
+	 * Load saved data.
+	 * @param  string $name Name of the data.
+	 * @return anything       Saved data.
+	 */
+	public function loadData(string $name)
+
+	/**
+	 * Create a new EditMessageText object. The chatId and messageId are automatically filled.
+	 * @return [type] [description]
+	 */
+	public function editMessageText(): \KeythKatz\TelegramBotCore\Method\EditMessageText
+}
+```
+
+InteractiveMessages allow you to easily handle CallbackQueries for a message. They work similarly
+to Conversations and allow you to store data that can be used throughout the lifespan of the message.
+
 ### InputFile
 Anywhere where `InputFile` is specified in the Telegram API, you may just send
 a resource, e.g. `fopen($file, 'r')`. Alternatively, you may encapsulate it in a
@@ -414,6 +485,11 @@ Both methods return Telegram's response, whatever it is according to the Telegra
 - [x] getFile
 - [ ] ... chat and sticker functions out of scope for now
 - [x] answerCallbackQuery
+- [x] editMessageText
+- [x] editMessageCaption
+- [x] editMessageMedia
+- [x] editMessageReplyMarkup
+- [x] deleteMessage
 
 ### Types
 - [x] ReplyKeyboardMarkup
