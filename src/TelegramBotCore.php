@@ -364,6 +364,7 @@ abstract class TelegramBotCore
 			}
 
 			// Parse for valid targeted command
+			$processed = false;
 			$rawMessage = $message->getText();
 			if ($rawMessage !== null && substr($rawMessage, 0, 1) === '/') {
 
@@ -374,9 +375,12 @@ abstract class TelegramBotCore
 					$handler = $this->commands[$command];
 					$handler->setMessage($message);
 					$handler->process($arguments, $message);
+					$processed = true;
 				}
+			}
+			
 			// Raw Message
-			} else {
+			if (!$processed) {
 				$this->genericMessageHandler->setMessage($message);
 				$this->genericMessageHandler->process($message);
 			}
